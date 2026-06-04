@@ -14,6 +14,6 @@ export function categorise(description) {
   if (d.includes('countdown') || d.includes('pak n save') || d.includes('food')) return 'Food'
   if (d.includes('netflix') || d.includes('spotify') || d.includes('cinema')) return 'Entertainment'
   if (d.includes('power') || d.includes('internet') || d.includes('rent')) return 'Bills'
-  if (d.includes('salary') || d.includes('wage') || d.includes('pay')) return 'Income'
+  if (d.includes('salary') || d.includes('wage') || d.includes('pay') || d.includes('income')) return 'Income'
   return 'Other'
 }
