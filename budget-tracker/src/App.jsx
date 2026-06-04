@@ -15,8 +15,6 @@ function App() {
     setTransactions(transactions.filter(t => t.id !== id))
   }
 
-  const [transactions, setTransactions] = useState([]);
-
   const handleImport = (newTx) => {
     setTransactions(prev => [...prev, ...newTx]);
   };
