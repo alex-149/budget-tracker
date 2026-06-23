@@ -18,6 +18,7 @@ function loadTransactions() {
  
 function App() {
   const [transactions, setTransactions] = useState(loadTransactions)
+  const [editingId, setEditingId] = useState(null)
  
   useEffect(() => {
     try {
@@ -33,19 +34,53 @@ function App() {
  
   function handleDelete(id) {
     setTransactions(transactions.filter(t => t.id !== id))
+    // If you delete the transaction currently being edited, back out of edit mode
+    if (id === editingId) {
+      setEditingId(null)
+    }
   }
  
   const handleImport = (newTx) => {
     setTransactions(prev => [...prev, ...newTx]);
   };
  
+  function handleEdit(id) {
+    setEditingId(id)
+  }
+ 
+  function handleCancelEdit() {
+    setEditingId(null)
+  }
+ 
+  function handleSubmit(transaction) {
+    if (editingId) {
+      setTransactions(transactions.map(t =>
+        t.id === editingId ? { ...transaction, id: editingId } : t
+      ))
+      setEditingId(null)
+    } else {
+      handleAdd(transaction)
+    }
+  }
+ 
+  const editingTransaction = transactions.find(t => t.id === editingId)
+ 
   return (
     <div>
       <h1>Budget Tracker</h1>
       <Summary transactions={transactions} />
-      <TransactionForm onSubmit={handleAdd} />
+      <TransactionForm
+        key={editingId || 'new'}
+        onSubmit={handleSubmit}
+        existing={editingTransaction}
+        onCancel={handleCancelEdit}
+      />
       <ImportCSV onImport={handleImport} />
-      <TransactionList transactions={transactions} onDelete={handleDelete} />
+      <TransactionList
+        transactions={transactions}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
     </div>
   )
 }
