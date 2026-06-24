@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CATEGORIES, categorise } from '../data/categories'
 
-function TransactionForm({ onSubmit, existing }) {
+function TransactionForm({ onSubmit, existing, onCancel }) {
   const [date, setDate] = useState(existing?.date || '')
   const [description, setDescription] = useState(existing?.description || '')
   const [amount, setAmount] = useState(existing?.amount || '')
@@ -61,6 +61,7 @@ function TransactionForm({ onSubmit, existing }) {
           ))}
         </select>
         <button onClick={handleSubmit}>{existing ? 'Save Changes' : 'Add'}</button>
+        {existing && <button type="button" onClick={onCancel}>Cancel</button>}
       </div>
     </div>
   )

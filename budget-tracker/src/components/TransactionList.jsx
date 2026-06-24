@@ -1,4 +1,4 @@
-function TransactionList({ transactions, onDelete }) {
+function TransactionList({ transactions, onDelete, onEdit }) {
   if (transactions.length === 0) {
     return <p>No transactions yet.</p>
   }
@@ -12,6 +12,7 @@ function TransactionList({ transactions, onDelete }) {
           <span>{t.description}</span>
           <span>{t.category}</span>
           <span>${t.amount.toFixed(2)}</span>
+          <button onClick={() => onEdit(t.id)}>Edit</button>
           <button onClick={() => onDelete(t.id)}>Delete</button>
         </div>
       ))}
