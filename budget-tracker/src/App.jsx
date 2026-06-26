@@ -5,6 +5,7 @@ import Summary from './components/Summary'
 import ImportCSV from './components/ImportCSV'
  
 const STORAGE_KEY = 'budget-tracker-transactions'
+const BUDGET_STORAGE_KEY = 'budget-tracker-budget'
  
 function loadTransactions() {
   try {
@@ -16,9 +17,21 @@ function loadTransactions() {
   }
 }
  
+function loadBudget() {
+  try {
+    const saved = localStorage.getItem(BUDGET_STORAGE_KEY)
+    const parsed = saved ? Number(saved) : 0
+    return isNaN(parsed) ? 0 : parsed
+  } catch (err) {
+    console.error('Failed to load budget from localStorage:', err)
+    return 0
+  }
+}
+ 
 function App() {
   const [transactions, setTransactions] = useState(loadTransactions)
   const [editingId, setEditingId] = useState(null)
+  const [budget, setBudget] = useState(loadBudget)
  
   useEffect(() => {
     try {
@@ -28,13 +41,20 @@ function App() {
     }
   }, [transactions])
  
+  useEffect(() => {
+    try {
+      localStorage.setItem(BUDGET_STORAGE_KEY, String(budget))
+    } catch (err) {
+      console.error('Failed to save budget to localStorage:', err)
+    }
+  }, [budget])
+ 
   function handleAdd(transaction) {
     setTransactions([...transactions, transaction])
   }
  
   function handleDelete(id) {
     setTransactions(transactions.filter(t => t.id !== id))
-    // If you delete the transaction currently being edited, back out of edit mode
     if (id === editingId) {
       setEditingId(null)
     }
@@ -68,7 +88,7 @@ function App() {
   return (
     <div>
       <h1>Budget Tracker</h1>
-      <Summary transactions={transactions} />
+      <Summary transactions={transactions} budget={budget} setBudget={setBudget} />
       <TransactionForm
         key={editingId || 'new'}
         onSubmit={handleSubmit}
